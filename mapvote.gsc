@@ -438,6 +438,7 @@ getmapname(map) {
     case "mp_favela": return "FAVELA";
     case "mp_nuked": return "NUKETOWN";
     case "mp_nightshift": return "SKIDROW";
+    case "mp_cement": return "FOUNDATION";
     /*
         How to add a new map name translation:
         1) Add 1 case like
