@@ -8,6 +8,9 @@
 
     Special thanks to @KeyZHostHDCopy for the materials and the .iwi
 
+    issue:
+        Skidrow & Highrise missing materials
+
     How to add a custom map image:
     1) Create a new material file for the preview
     2) Add the preview iwi file in the mapvote.iwd
@@ -81,7 +84,7 @@ ArrayRemoveIndex(array, index)
         if(i != index)
             new_array[new_array.size] = array[i];
     }
-    return new_array;
+    array = new_array;
 }
 
 mapvote()
@@ -97,8 +100,8 @@ mapvote()
         map = maps[ index ];
         map_preview = "preview_" + map;
         setAllClientsDvar( dvar, map_preview );
-        setAllClientsDvar( dvarname,  mapimgtoname( map_preview ) );
-        maps = ArrayRemoveIndex(maps, index);
+        setAllClientsDvar( dvarname, getmapname( map ) );
+        ArrayRemoveIndex(maps, index);
     }
 
     for(i = 0; i < level.players.size; i++)
@@ -133,7 +136,6 @@ mapvote()
     if( gametypes.size > 0)
     {
         gametypefiles = strTok(getDvar("mv_gametypefiles"), "@");
-        print("gametypes[int(winner)]:" + gametypefiles[ gametypes[int(winner)] ]);
         dsr = "dsr " + gametypefiles[ gametypes[int(winner)] ];
     }
     setDvar("sv_maprotation", dsr + " map " + mapimgtomapid( getDvar("map" + winner) ) );
@@ -190,18 +192,28 @@ setAllClientsDvar( dvar, value )
 mapimgtoname(img)
 {
     array = strTok( img , "_");
-    str = strTok( img , "_")[1] + "_" + strTok( img, "_")[2];
-    if(array.size > 3)
-        str = strTok( img , "_")[1] + "_" + strTok( img, "_")[2] + "_" + strTok( img, "_")[3];
+    str = "";
+    for(i = 1; i < array.size; i++)
+    {
+        if(str == "")
+            str = array[ i ];
+        else
+            str = str + "_" + array[ i ];
+    }
     return getmapname( str );
 }
 mapimgtomapid(img)
 {
     array = strTok( img , "_");
-    str = strTok( img , "_")[1] + "_" + strTok( img, "_")[2];
-    if(array.size > 3)
-        str = strTok( img , "_")[1] + "_" + strTok( img, "_")[2] + "_" + strTok( img, "_")[3];
-    return  str;
+    str = "";
+    for(i = 1; i < array.size; i++)
+    {
+        if(str == "")
+            str = array[ i ];
+        else
+            str = str + "_" + array[ i ];
+    }
+    return str;
 }
 getmostvotedmap()
 {
