@@ -160,13 +160,11 @@
 		}
 		onRequestClose
 		{
-            close class;
-			open self;
+
 		}
 		onEsc
 		{
-            close class;
-			open self;
+
 		}
 
         itemDef
