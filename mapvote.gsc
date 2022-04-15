@@ -73,8 +73,42 @@ init()
 
     
     level thread onPlayerConnect();
-
 }
+
+/*default_onTimeLimit()
+{
+    var_0 = undefined;
+    level.finalKillCam_winner = "none";
+
+    if ( level.teamBased )
+    {
+        if ( game["teamScores"]["allies"] == game["teamScores"]["axis"] )
+            var_0 = "tie";
+        else if ( game["teamScores"]["axis"] > game["teamScores"]["allies"] )
+        {
+            level.finalKillCam_winner = "axis";
+            var_0 = "axis";
+        }
+        else
+        {
+            level.finalKillCam_winner = "allies";
+            var_0 = "allies";
+        }
+
+        logstring( "time limit, win: " + var_0 + ", allies: " + game["teamScores"]["allies"] + ", opfor: " + game["teamScores"]["axis"] );
+    }
+    else
+    {
+        var_0 = maps\mp\gametypes_gamescore::getHighestScoringPlayer();
+
+        if ( isdefined( var_0 ) )
+            logstring( "time limit, win: " + var_0.name );
+        else
+            logstring( "time limit, tie" );
+    }
+
+    thread endGame( var_0, game["strings"]["time_limit_reached"] );
+}*/
 
 ArrayRemoveIndex(array, index)
 {
@@ -84,7 +118,7 @@ ArrayRemoveIndex(array, index)
         if(i != index)
             new_array[new_array.size] = array[i];
     }
-    array = new_array;
+    return new_array;
 }
 
 mapvote()
@@ -92,6 +126,10 @@ mapvote()
     // Choose random maps from the array
     maps = [];
     maps = strTok( getDvar("mv_maps"), " ");
+
+    setAllClientsDvar("votetime", "00:00");
+    value = "0/" + int(num_of_bots()/2+1);
+     
     for(i = 1; i <= 6;i++)
     {
         dvar = "map" + i;
@@ -101,7 +139,11 @@ mapvote()
         map_preview = "preview_" + map;
         setAllClientsDvar( dvar, map_preview );
         setAllClientsDvar( dvarname, getmapname( map ) );
-        ArrayRemoveIndex(maps, index);
+        maps = ArrayRemoveIndex(maps, index);
+
+        // Reset UI votes
+        dvar = "mapvotes" + i;
+        setAllClientsDvar( dvar, value );
     }
 
     for(i = 0; i < level.players.size; i++)
@@ -129,7 +171,6 @@ mapvote()
         if( !level.players[ i ] is_a_bot() )
         {
             level.players[ i ] closeMenu("quickresponses");
-    
         }
     }
     dsr = "";
@@ -140,7 +181,6 @@ mapvote()
     }
     setDvar("sv_maprotation", dsr + " map " + mapimgtomapid( getDvar("map" + winner) ) );
     setDvar("sv_maprotationcurrent", dsr + " map " + mapimgtomapid( getDvar("map" + winner) ) );
-
 }
 
 getindexfomarray(array, value)
@@ -187,7 +227,8 @@ setAllClientsDvar( dvar, value )
 {
     setDvar(dvar, value);
     for(i = 0; i < level.players.size; i++)
-        level.players[ i ] setClientDvar( dvar, value );
+        if( !level.players[ i ] is_a_bot() )
+            level.players[ i ] setClientDvar( dvar, value );
 }
 mapimgtoname(img)
 {
@@ -291,13 +332,10 @@ managetime()
         else
         {
             strtime = strtime + "" + seconds;
-        }
-        
+        }  
         
         setAllClientsDvar("votetime", strtime);   
         
-        
-
         wait 1;
         time--;
     }
@@ -328,22 +366,19 @@ managevotes()
                 return;
             }
         }
-        wait 0.05;
-
-        
+        wait 0.05; 
     }
 }
 
 main()
 {
     replaceFunc(maps\mp\gametypes\_quickmessages::quickresponses, ::quickresponses);
-    replacefunc(maps\mp\gametypes\_gamelogic::waittillFinalKillcamDone, ::waittillFinalKillcamDone);
+    replacefunc(maps\mp\gametypes\_gamelogic::waittillFinalKillcamDone, ::_waittillFinalKillcamDone);
 }
 quickresponses(response){}
 
-waittillFinalKillcamDone()
+_waittillFinalKillcamDone()
 {
-  
 	if ( !IsDefined( level.finalKillCam_winner ) )
     {
         if(wasLastRound())
@@ -356,21 +391,15 @@ waittillFinalKillcamDone()
     if(wasLastRound())
         mapvote();
 
-
 	return 1;
 }
 
 onPlayerConnect()
 {
 	level endon("game_ended");
-    once = 0;
     for(;;)
     {
         level waittill("connected", player);
-        if(!once)
-        {
-            once = 1;
-        }
         player thread onPlayerSpawned();
     }
 }
