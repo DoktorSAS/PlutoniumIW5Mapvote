@@ -26,9 +26,6 @@ init()
     print("Mapvote loaded...");
     print("Developed by @DoktorSAS");
 
-    //game["mapvote"] = "mapvote";
-	//precacheMenu( "mapvote" );
-
     level.map_winner = "";
 
     create_dvar("votetime", "00:00");
@@ -74,41 +71,6 @@ init()
     
     level thread onPlayerConnect();
 }
-
-/*default_onTimeLimit()
-{
-    var_0 = undefined;
-    level.finalKillCam_winner = "none";
-
-    if ( level.teamBased )
-    {
-        if ( game["teamScores"]["allies"] == game["teamScores"]["axis"] )
-            var_0 = "tie";
-        else if ( game["teamScores"]["axis"] > game["teamScores"]["allies"] )
-        {
-            level.finalKillCam_winner = "axis";
-            var_0 = "axis";
-        }
-        else
-        {
-            level.finalKillCam_winner = "allies";
-            var_0 = "allies";
-        }
-
-        logstring( "time limit, win: " + var_0 + ", allies: " + game["teamScores"]["allies"] + ", opfor: " + game["teamScores"]["axis"] );
-    }
-    else
-    {
-        var_0 = maps\mp\gametypes_gamescore::getHighestScoringPlayer();
-
-        if ( isdefined( var_0 ) )
-            logstring( "time limit, win: " + var_0.name );
-        else
-            logstring( "time limit, tie" );
-    }
-
-    thread endGame( var_0, game["strings"]["time_limit_reached"] );
-}*/
 
 ArrayRemoveIndex(array, index)
 {
@@ -379,7 +341,7 @@ quickresponses(response){}
 
 _waittillFinalKillcamDone()
 {
-	if ( !IsDefined( level.finalKillCam_winner ) )
+    if ( !IsDefined( level.finalKillCam_winner ) )
     {
         if(wasLastRound())
             mapvote();
@@ -387,16 +349,16 @@ _waittillFinalKillcamDone()
     }
 		
 		
-	level waittill( "final_killcam_done" );
+    level waittill( "final_killcam_done" );
     if(wasLastRound())
         mapvote();
 
-	return 1;
+    return 1;
 }
 
 onPlayerConnect()
 {
-	level endon("game_ended");
+    level endon("game_ended");
     for(;;)
     {
         level waittill("connected", player);
@@ -493,10 +455,10 @@ getmapname(map) {
 // BotWarfare code https://github.com/ineedbots/piw5_bot_warfare
 is_a_bot()
 {
-	assert( isDefined( self ) );
-	assert( isPlayer( self ) );
+    assert( isDefined( self ) );
+    assert( isPlayer( self ) );
 
-	return ( ( isDefined( self.pers["isBot"] ) && self.pers["isBot"] ) || ( isDefined( self.pers["isBotWarfare"] ) && self.pers["isBotWarfare"] ) || isSubStr( self getguid() + "", "bot" ) );
+    return ( ( isDefined( self.pers["isBot"] ) && self.pers["isBot"] ) || ( isDefined( self.pers["isBotWarfare"] ) && self.pers["isBotWarfare"] ) || isSubStr( self getguid() + "", "bot" ) );
 }
 
 num_of_bots()
