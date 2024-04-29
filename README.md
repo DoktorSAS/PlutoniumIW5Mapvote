@@ -9,7 +9,7 @@ Special thanks to [@KeyZHostHDCopy](https://twitter.com/KeyZHostHDCopy) for the 
  - [How to add custom maps to the mapvote list](#how-to-add-custom-maps-to-the-mapvote-list)
 
 ### Preview
-![preview](https://media.discordapp.net/attachments/953357834626687087/963026095647645726/unknown.png?width=1149&height=676)
+![preview](https://pbs.twimg.com/media/FU0K26uWYAAdys-?format=jpg&name=large)
 
 
 ### Requirements
