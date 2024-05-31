@@ -15,7 +15,6 @@
     2) Add the preview iwi file in the mapvote.iwd
     3) Rebuild the mod with zonetool
     4) Put the mod.ff and the mapvote.iwd in your mods/modfolder (Like mods/mapvote) in your %localappdata%\Plutonium\storage\iw5\mods\    
-
 */
 init()
 {
@@ -67,7 +66,6 @@ init()
     create_dvar("mapvotes5", "0/18");
     create_dvar("mapvotes6", "0/18");
 
-    
     level thread onPlayerConnect();
 }
 
@@ -88,7 +86,7 @@ mapvote()
     maps = [];
     maps = strTok( getDvar("mv_maps"), " ");
 
-    setAllClientsDvar("votetime", "00:00");
+    _setAllClientsDvar("votetime", "00:00");
     value = "0/" + int(num_of_bots()/2+1);
      
     for(i = 1; i <= 6;i++)
@@ -98,13 +96,13 @@ mapvote()
         index = randomIntRange(0, maps.size);
         map = maps[ index ];
         map_preview = "preview_" + map;
-        setAllClientsDvar( dvar, map_preview );
-        setAllClientsDvar( dvarname, getmapname( map ) );
+        _setAllClientsDvar( dvar, map_preview );
+        _setAllClientsDvar( dvarname, getmapname( map ) );
         maps = ArrayRemoveIndex(maps, index);
 
         // Reset UI votes
         dvar = "mapvotes" + i;
-        setAllClientsDvar( dvar, value );
+        _setAllClientsDvar( dvar, value );
     }
 
     for(i = 0; i < level.players.size; i++)
@@ -159,7 +157,7 @@ managegametypenames()
 {
     level endon("game_ended");
     level endon("mapvote_done");
-    setAllClientsDvar("mv_randomgametypeenable", getDvar("mv_randomgametypeenable") );
+    _setAllClientsDvar("mv_randomgametypeenable", getDvar("mv_randomgametypeenable") );
     if(getDvarInt("mv_randomgametypeenable") == 0)
         return [];
 
@@ -169,27 +167,31 @@ managegametypenames()
     gametypes[0] = "unknown";
 
     gametypes[1] = randomIntRange(0, gametypesnames.size-1);
-    setAllClientsDvar("mapgametype1", gametypesnames[ gametypes[1] ] );
+    _setAllClientsDvar("mapgametype1", gametypesnames[ gametypes[1] ] );
     gametypes[2] = randomIntRange(0, gametypesnames.size-1);
-    setAllClientsDvar("mapgametype2", gametypesnames[ gametypes[2] ] );
+    _setAllClientsDvar("mapgametype2", gametypesnames[ gametypes[2] ] );
     gametypes[3] = randomIntRange(0, gametypesnames.size-1);
-    setAllClientsDvar("mapgametype3", gametypesnames[ gametypes[3] ] );
+    _setAllClientsDvar("mapgametype3", gametypesnames[ gametypes[3] ] );
     gametypes[4] = randomIntRange(0, gametypesnames.size-1);
-    setAllClientsDvar("mapgametype4", gametypesnames[ gametypes[4] ] );
+    _setAllClientsDvar("mapgametype4", gametypesnames[ gametypes[4] ] );
     gametypes[5] = randomIntRange(0, gametypesnames.size-1);
-    setAllClientsDvar("mapgametype5", gametypesnames[ gametypes[5] ] );
+    _setAllClientsDvar("mapgametype5", gametypesnames[ gametypes[5] ] );
     gametypes[6] = randomIntRange(0, gametypesnames.size-1);
-    setAllClientsDvar("mapgametype6", gametypesnames[ gametypes[6] ] );
+    _setAllClientsDvar("mapgametype6", gametypesnames[ gametypes[6] ] );
 
     return gametypes;
 
 }
-setAllClientsDvar( dvar, value )
+_setAllClientsDvar( dvar, value )
 {
     setDvar(dvar, value);
     for(i = 0; i < level.players.size; i++)
-        if( !level.players[ i ] is_a_bot() )
+    {
+        if( isDefined(level.players[ i ]) && !level.players[ i ] is_a_bot() ) 
+        {
             level.players[ i ] setClientDvar( dvar, value );
+        }
+    }
 }
 mapimgtoname(img)
 {
@@ -295,7 +297,7 @@ managetime()
             strtime = strtime + "" + seconds;
         }  
         
-        setAllClientsDvar("votetime", strtime);   
+        _setAllClientsDvar("votetime", strtime);   
         
         wait 1;
         time--;
@@ -318,11 +320,11 @@ managevotes()
             }
             value = votes + "/" + int(num_of_bots()/2+1);
             if( getDvar(dvar) != value )
-                setAllClientsDvar( dvar, value );
+                _setAllClientsDvar( dvar, value );
             
             if(votes >= int(num_of_bots()/2+1))
             {
-                setAllClientsDvar("votetime", "00:00");
+                _setAllClientsDvar("votetime", "00:00");
                 level notify("mapvote_done", getmostvotedmap()+1);
                 return;
             }
@@ -343,14 +345,19 @@ _waittillFinalKillcamDone()
     if ( !IsDefined( level.finalKillCam_winner ) )
     {
         if(wasLastRound())
+        {
             mapvote();
+        }
+        
         return 0;
     }
 		
 		
     level waittill( "final_killcam_done" );
     if(wasLastRound())
+    {
         mapvote();
+    }
 
     return 1;
 }
@@ -400,56 +407,58 @@ onPlayerSpawned()
 // Birchy code
 getmapname(map) {
     switch(map) {
-    case "mp_alpha": return "LOCKDOWN";
-    case "mp_bootleg": return "BOOTLEG";
-    case "mp_bravo": return "MISSION";
-    case "mp_carbon": return "CARBON";
-    case "mp_dome": return "DOME";
-    case "mp_exchange": return "DOWNTURN";
-    case "mp_hardhat": return "HARDHAT";
-    case "mp_interchange": return "INTERCHANGE";
-    case "mp_lambeth": return "FALLEN";
-    case "mp_mogadishu": return "BAKAARA";
-    case "mp_paris": return "RESISTANCE";
-    case "mp_plaza2": return "ARKADEN";
-    case "mp_radar": return "OUTPOST";
-    case "mp_seatown": return "SEATOWN";
-    case "mp_underground": return "UNDERGROUND";
-    case "mp_village": return "VILLAGE";
-    case "mp_terminal_cls": return "TERMINAL";
-    case "mp_rust": return "RUST";
-    case "mp_highrise": return "HIGHRISE";
-    case "mp_italy": return "PIAZZA";
-    case "mp_park": return "LIBERATION";
-    case "mp_overwatch": return "OVERWATCH";
-    case "mp_morningwood": return "BLACK BOX";
-    case "mp_meteora": return "SANCTUARY";
-    case "mp_qadeem": return "OASIS";
-    case "mp_restrepo_ss": return "LOOKOUT";
-    case "mp_hillside_ss": return "GETAWAY";
-    case "mp_courtyard_ss": return "EROSION";
-    case "mp_aground_ss": return "AGROUND";
-    case "mp_six_ss": return "VORTEX";
-    case "mp_burn_ss": return "U-TURN";
-    case "mp_crosswalk_ss": return "INTERSECTION";
-    case "mp_shipbreaker": return "DECOMMISSION";
-    case "mp_roughneck": return "OFF SHORE";
-    case "mp_moab": return "GULCH";
-    case "mp_boardwalk": return "BOARDWALK";
-    case "mp_nola": return "PARISH";
-    case "mp_favela": return "FAVELA";
-    case "mp_nuked": return "NUKETOWN";
-    case "mp_nightshift": return "SKIDROW";
-    case "mp_cement": return "FOUNDATION";
-    /*
-        How to add a new map name translation:
-        1) Add 1 case like
-            case "mp_mapname": return "MAPNAME";
-            like
-            case "mp_minecraft": return "MINECRAFT":
-    */
-    default: return "UNKNOWN";
+        case "mp_alpha": return "LOCKDOWN";
+        case "mp_bootleg": return "BOOTLEG";
+        case "mp_bravo": return "MISSION";
+        case "mp_carbon": return "CARBON";
+        case "mp_dome": return "DOME";
+        case "mp_exchange": return "DOWNTURN";
+        case "mp_hardhat": return "HARDHAT";
+        case "mp_interchange": return "INTERCHANGE";
+        case "mp_lambeth": return "FALLEN";
+        case "mp_mogadishu": return "BAKAARA";
+        case "mp_paris": return "RESISTANCE";
+        case "mp_plaza2": return "ARKADEN";
+        case "mp_radar": return "OUTPOST";
+        case "mp_seatown": return "SEATOWN";
+        case "mp_underground": return "UNDERGROUND";
+        case "mp_village": return "VILLAGE";
+        case "mp_terminal_cls": return "TERMINAL";
+        case "mp_rust": return "RUST";
+        case "mp_highrise": return "HIGHRISE";
+        case "mp_italy": return "PIAZZA";
+        case "mp_park": return "LIBERATION";
+        case "mp_overwatch": return "OVERWATCH";
+        case "mp_morningwood": return "BLACK BOX";
+        case "mp_meteora": return "SANCTUARY";
+        case "mp_qadeem": return "OASIS";
+        case "mp_restrepo_ss": return "LOOKOUT";
+        case "mp_hillside_ss": return "GETAWAY";
+        case "mp_courtyard_ss": return "EROSION";
+        case "mp_aground_ss": return "AGROUND";
+        case "mp_six_ss": return "VORTEX";
+        case "mp_burn_ss": return "U-TURN";
+        case "mp_crosswalk_ss": return "INTERSECTION";
+        case "mp_shipbreaker": return "DECOMMISSION";
+        case "mp_roughneck": return "OFF SHORE";
+        case "mp_moab": return "GULCH";
+        case "mp_boardwalk": return "BOARDWALK";
+        case "mp_nola": return "PARISH";
+        case "mp_favela": return "FAVELA";
+        case "mp_nuked": return "NUKETOWN";
+        case "mp_nightshift": return "SKIDROW";
+        case "mp_cement": return "FOUNDATION";
+        /*
+            How to add a new map name translation:
+            1) Add 1 case like
+                case "mp_mapname": return "MAPNAME";
+                like
+                case "mp_minecraft": return "MINECRAFT":
+        */
+        default: return "UNKNOWN";
     }
+
+    return "UNKNOWN";
 }
 // BotWarfare code https://github.com/ineedbots/piw5_bot_warfare
 is_a_bot()
