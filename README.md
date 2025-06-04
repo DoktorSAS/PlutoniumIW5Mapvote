@@ -1,30 +1,32 @@
-# Plutonium IW5 Mapvote
-Developed by [@DoktorSAS](https://twitter.com/DoktorSAS)
+<div id="header" align="center">
+  <h1>Call of Duty: Modern Warfare III Mapvote</h1>
+
+  [![Build Badge](https://img.shields.io/badge/Developed_by-DoktorSAS-brightgreen?style=for-the-badge&logo=x)](https://twitter.com/DoktorSAS)
+  [![License](https://img.shields.io/badge/LICENSE-GPL--3.0-blue?style=for-the-badge&logo=appveyor)](LICENSE)
 
 Special thanks to [@KeyZHostHDCopy](https://twitter.com/KeyZHostHDCopy) for the materials and the .iwi
-
-
- - [Requirements](#requirements)
- - [How to setup the mapvote step by step](#how-to-setup-the-mapvote-step-by-step)
- - [How to add custom maps to the mapvote list](#how-to-add-custom-maps-to-the-mapvote-list)
+</div>
 
 ### Preview
 ![preview](iw5_preview.png)
 
-
 ### Requirements
+- The mod can run client side but it will not make the map rotate since its main logic is based on the game built in map rotation.
+- It will only work on plutonium client or any client who have mod support and map rotation.
 
-- The script can only run on Server, It will not work in private games.
-- Server must be hosted on Plutonium client, the script works only on Plutonium client.
+### Installation
 
-
-### How to setup the mapvote step by step
-
- 1) Compile the mod with the zonetool 
- 2) Copy the Compiled mod.ff file in your Directory %localappdata%\Plutonium\storage\iw5\mods\YOURMODNAME (Exemple: ..\mods\mapvote, ..\mods\funserver)
- 3) Create the .iwd file with .iwi images in the images folder and put in in your Directory %localappdata%\Plutonium\storage\iw5\mods\YOURMODNAME (Exemple: ..\mods\mapvote, ..\mods\funserver)
- 4) Copy the Content of the mapvote.cfg in your .cfg (Exemple: server.cfg, dedicated_mp.cfg, dedicated.cfg, etc ) file that manages the Server.
- 5) Edit the Dvars to setup the Server, many Dvars are only for Aesthetic Parameters.
+ 1) Compile the mod with the zonetool *with the zone tool provided under zonetool folder*
+    - Copy the zonetool and the zone_source folder and paste it under your game folder (Ex: `steamapps\common\Call of Duty Modern Warfare 3`).
+    - Extract the file from the zoontool folder and move the zonetool_iw5.exe and the ZoneTool-x86-release.dll under your game folder  (Ex: `steamapps\common\Call of Duty Modern Warfare 3`).
+    - Rename ZoneTool-x86-release.dll to zoonetool.dll.
+    - Copy the mod folder and move it inside the zonetool folder.
+    - Execute the zonetool_iw5.exe and execute the command `buildZone mod`
+    - Once done go in zone/english and retrive your compiled mod.ff file.
+ 3) Copy the Compiled mod.ff file in your Directory %localappdata%\Plutonium\storage\iw5\mods\YOURMODNAME (Exemple: ..\mods\mapvote, ..\mods\funserver)
+ 4) Create the .iwd file with .iwi images in the images folder and put in in your Directory %localappdata%\Plutonium\storage\iw5\mods\YOURMODNAME (Exemple: ..\mods\mapvote, ..\mods\funserver)
+ 5) Copy the Content of the mapvote.cfg in your .cfg (Exemple: server.cfg, dedicated_mp.cfg, dedicated.cfg, etc ) file that manages the Server.
+ 6) Edit the Dvars to setup the Server, many Dvars are only for Aesthetic Parameters.
     - set the Dvar mv_maps to decide the maps that will be shown in mapvote, Example:
         - set mv_maps "mp_favela mp_rust mp_terminal_cls mp_alpha mp_bootleg mp_bravo mp_carbon mp_dome mp_exchange mp_hardhat mp_interchange mp_lambeth mp_mogadishu mp_paris mp_plaza2 mp_radar mp_seatown mp_underground mp_village"
     - set the dvar mv_enable to 1 if you want have it active on your server.
