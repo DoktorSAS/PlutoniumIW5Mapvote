@@ -14,6 +14,7 @@ Special thanks to [@KeyZHostHDCopy](https://twitter.com/KeyZHostHDCopy) for the 
 - The mod can run client side but it will not make the map rotate since its main logic is based on the game built in map rotation.
 - It will only work on plutonium client or any client who have mod support and map rotation.
 
+**P.S**: *Use the specific included zonetool and dll or it will potentially not work (Or use a mod compiler that support .menu files). Check zonetool log for parsing of menu file.*
 ### Installation
 
  1) Compile the mod with the zonetool *with the zone tool provided under zonetool folder*
@@ -39,6 +40,8 @@ Special thanks to [@KeyZHostHDCopy](https://twitter.com/KeyZHostHDCopy) for the 
     are linked to the element in mv_gametypenames
  5) Copy the mapvote.gsc and put it %localappdata%\Plutonium\storage\iw5\scripts\
  6) Run the Server and have fun. Done!
+
+
 
 ## How to add custom maps to the mapvote list
   1) Create a new material file for the preview
