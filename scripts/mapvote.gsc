@@ -67,6 +67,7 @@ init()
     create_dvar("mapvotes6", "0/18");
 
     level thread onPlayerConnect();
+    level.callback_mapvote = ::mapvote;
 }
 
 ArrayRemoveIndex(array, index)
@@ -336,8 +337,31 @@ managevotes()
 main()
 {
     replaceFunc(maps\mp\gametypes\_quickmessages::quickresponses, ::quickresponses);
-    replacefunc(maps\mp\gametypes\_gamelogic::waittillFinalKillcamDone, ::_waittillFinalKillcamDone);
+    replacefunc(maps\mp\gametypes\_gamelogic::waittillFinalKillcamDone, ::waittillFinalKillcamDone); // <-
+    /* 
+        // If you run into issues with search and destroy remove the the line above and replace it with this if and else case.
+        if(getDvar("g_gametype") == "sd")
+        {
+            replacefunc(maps\mp\_utility::levelflagclear, ::_levelflagclear);
+        }
+        else
+        {
+            replacefunc(maps\mp\gametypes\_gamelogic::waittillFinalKillcamDone, ::waittillFinalKillcamDone);
+        }
+    */
 }
+
+_levelflagclear( var_0 )
+{
+    if(wasLastRound())
+    {
+        [level.callback_mapvote]();
+    }
+
+    level.levelflags[var_0] = 0;
+    level notify( var_0 );
+}
+
 quickresponses(response){}
 
 _waittillFinalKillcamDone()
